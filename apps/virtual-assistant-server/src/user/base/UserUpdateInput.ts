@@ -11,13 +11,28 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CommandUpdateManyWithoutUsersInput } from "./CommandUpdateManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
+import { TaskUpdateManyWithoutUsersInput } from "./TaskUpdateManyWithoutUsersInput";
 
 @InputType()
 class UserUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommandUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CommandUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CommandUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  commands?: CommandUpdateManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -71,6 +86,18 @@ class UserUpdateInput {
     nullable: true,
   })
   roles?: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => TaskUpdateManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => TaskUpdateManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => TaskUpdateManyWithoutUsersInput, {
+    nullable: true,
+  })
+  tasks?: TaskUpdateManyWithoutUsersInput;
 
   @ApiProperty({
     required: false,

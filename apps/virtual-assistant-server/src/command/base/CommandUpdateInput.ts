@@ -9,5 +9,60 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class CommandUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsString, IsOptional, ValidateNested, IsDate } from "class-validator";
+import { ResponseUpdateManyWithoutCommandsInput } from "./ResponseUpdateManyWithoutCommandsInput";
+import { Type } from "class-transformer";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+
+@InputType()
+class CommandUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  commandText?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ResponseUpdateManyWithoutCommandsInput,
+  })
+  @ValidateNested()
+  @Type(() => ResponseUpdateManyWithoutCommandsInput)
+  @IsOptional()
+  @Field(() => ResponseUpdateManyWithoutCommandsInput, {
+    nullable: true,
+  })
+  responses?: ResponseUpdateManyWithoutCommandsInput;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  timestamp?: Date | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  user?: UserWhereUniqueInput | null;
+}
+
 export { CommandUpdateInput as CommandUpdateInput };

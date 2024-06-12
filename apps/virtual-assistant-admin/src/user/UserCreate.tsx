@@ -4,17 +4,28 @@ import {
   Create,
   SimpleForm,
   CreateProps,
+  ReferenceArrayInput,
+  SelectArrayInput,
   TextInput,
   PasswordInput,
-  SelectArrayInput,
 } from "react-admin";
 
+import { CommandTitle } from "../command/CommandTitle";
+import { TaskTitle } from "../task/TaskTitle";
 import { ROLES_OPTIONS } from "../user/RolesOptions";
 
 export const UserCreate = (props: CreateProps): React.ReactElement => {
   return (
     <Create {...props}>
       <SimpleForm>
+        <ReferenceArrayInput
+          source="commands"
+          reference="Command"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={CommandTitle} />
+        </ReferenceArrayInput>
         <TextInput label="Email" source="email" type="email" />
         <TextInput label="First Name" source="firstName" />
         <TextInput label="Last Name" source="lastName" />
@@ -25,6 +36,14 @@ export const UserCreate = (props: CreateProps): React.ReactElement => {
           optionText="label"
           optionValue="value"
         />
+        <ReferenceArrayInput
+          source="tasks"
+          reference="Task"
+          parse={(value: any) => value && value.map((v: any) => ({ id: v }))}
+          format={(value: any) => value && value.map((v: any) => v.id)}
+        >
+          <SelectArrayInput optionText={TaskTitle} />
+        </ReferenceArrayInput>
         <TextInput label="Username" source="username" />
       </SimpleForm>
     </Create>

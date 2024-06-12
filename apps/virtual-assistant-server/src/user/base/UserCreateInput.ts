@@ -11,13 +11,28 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import { CommandCreateNestedManyWithoutUsersInput } from "./CommandCreateNestedManyWithoutUsersInput";
+import { ValidateNested, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
 import { IsJSONValue } from "../../validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
+import { TaskCreateNestedManyWithoutUsersInput } from "./TaskCreateNestedManyWithoutUsersInput";
 
 @InputType()
 class UserCreateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommandCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => CommandCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => CommandCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  commands?: CommandCreateNestedManyWithoutUsersInput;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -65,6 +80,18 @@ class UserCreateInput {
   @IsJSONValue()
   @Field(() => GraphQLJSON)
   roles!: InputJsonValue;
+
+  @ApiProperty({
+    required: false,
+    type: () => TaskCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => TaskCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => TaskCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  tasks?: TaskCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: true,

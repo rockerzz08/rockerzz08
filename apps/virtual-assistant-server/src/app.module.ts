@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { CommandModule } from "./command/command.module";
 import { TaskModule } from "./task/task.module";
+import { CommandModule } from "./command/command.module";
 import { ResponseModule } from "./response/response.module";
 import { UserModule } from "./user/user.module";
 import { HealthModule } from "./health/health.module";
@@ -12,11 +12,16 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 
+import { ACLModule } from "./auth/acl.module";
+import { AuthModule } from "./auth/auth.module";
+
 @Module({
   controllers: [],
   imports: [
-    CommandModule,
+    ACLModule,
+    AuthModule,
     TaskModule,
+    CommandModule,
     ResponseModule,
     UserModule,
     HealthModule,

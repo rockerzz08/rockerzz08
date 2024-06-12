@@ -9,5 +9,47 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class ResponseUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { CommandWhereUniqueInput } from "../../command/base/CommandWhereUniqueInput";
+import { ValidateNested, IsOptional, IsString, IsDate } from "class-validator";
+import { Type } from "class-transformer";
+
+@InputType()
+class ResponseUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: () => CommandWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => CommandWhereUniqueInput)
+  @IsOptional()
+  @Field(() => CommandWhereUniqueInput, {
+    nullable: true,
+  })
+  command?: CommandWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  responseText?: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  timestamp?: Date | null;
+}
+
 export { ResponseUpdateInput as ResponseUpdateInput };

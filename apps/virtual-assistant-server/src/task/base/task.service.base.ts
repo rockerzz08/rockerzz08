@@ -10,7 +10,7 @@ https://docs.amplication.com/how-to/custom-code
 ------------------------------------------------------------------------------
   */
 import { PrismaService } from "../../prisma/prisma.service";
-import { Prisma, Task as PrismaTask } from "@prisma/client";
+import { Prisma, Task as PrismaTask, User as PrismaUser } from "@prisma/client";
 
 export class TaskServiceBase {
   constructor(protected readonly prisma: PrismaService) {}
@@ -43,5 +43,13 @@ export class TaskServiceBase {
     args: Prisma.SelectSubset<T, Prisma.TaskDeleteArgs>
   ): Promise<PrismaTask> {
     return this.prisma.task.delete(args);
+  }
+
+  async getUser(parentId: string): Promise<PrismaUser | null> {
+    return this.prisma.task
+      .findUnique({
+        where: { id: parentId },
+      })
+      .user();
   }
 }

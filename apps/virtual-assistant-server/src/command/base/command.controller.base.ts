@@ -16,57 +16,128 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import * as nestAccessControl from "nest-access-control";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { CommandService } from "../command.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { CommandCreateInput } from "./CommandCreateInput";
 import { Command } from "./Command";
 import { CommandFindManyArgs } from "./CommandFindManyArgs";
 import { CommandWhereUniqueInput } from "./CommandWhereUniqueInput";
 import { CommandUpdateInput } from "./CommandUpdateInput";
+import { ResponseFindManyArgs } from "../../response/base/ResponseFindManyArgs";
+import { Response } from "../../response/base/Response";
+import { ResponseWhereUniqueInput } from "../../response/base/ResponseWhereUniqueInput";
 
+@swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class CommandControllerBase {
-  constructor(protected readonly service: CommandService) {}
+  constructor(
+    protected readonly service: CommandService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Command })
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "create",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async createCommand(
     @common.Body() data: CommandCreateInput
   ): Promise<Command> {
     return await this.service.createCommand({
-      data: data,
+      data: {
+        ...data,
+
+        user: data.user
+          ? {
+              connect: data.user,
+            }
+          : undefined,
+      },
       select: {
+        commandText: true,
         createdAt: true,
         id: true,
+        timestamp: true,
         updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Command] })
   @ApiNestedQuery(CommandFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async commands(@common.Req() request: Request): Promise<Command[]> {
     const args = plainToClass(CommandFindManyArgs, request.query);
     return this.service.commands({
       ...args,
       select: {
+        commandText: true,
         createdAt: true,
         id: true,
+        timestamp: true,
         updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Command })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "read",
+    possession: "own",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async command(
     @common.Param() params: CommandWhereUniqueInput
   ): Promise<Command | null> {
     const result = await this.service.command({
       where: params,
       select: {
+        commandText: true,
         createdAt: true,
         id: true,
+        timestamp: true,
         updatedAt: true,
+
+        user: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     if (result === null) {
@@ -77,9 +148,18 @@ export class CommandControllerBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Command })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "update",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async updateCommand(
     @common.Param() params: CommandWhereUniqueInput,
     @common.Body() data: CommandUpdateInput
@@ -87,11 +167,27 @@ export class CommandControllerBase {
     try {
       return await this.service.updateCommand({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          user: data.user
+            ? {
+                connect: data.user,
+              }
+            : undefined,
+        },
         select: {
+          commandText: true,
           createdAt: true,
           id: true,
+          timestamp: true,
           updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -107,6 +203,14 @@ export class CommandControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Command })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "delete",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async deleteCommand(
     @common.Param() params: CommandWhereUniqueInput
   ): Promise<Command | null> {
@@ -114,9 +218,17 @@ export class CommandControllerBase {
       return await this.service.deleteCommand({
         where: params,
         select: {
+          commandText: true,
           createdAt: true,
           id: true,
+          timestamp: true,
           updatedAt: true,
+
+          user: {
+            select: {
+              id: true,
+            },
+          },
         },
       });
     } catch (error) {
@@ -127,5 +239,108 @@ export class CommandControllerBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @common.Get("/:id/responses")
+  @ApiNestedQuery(ResponseFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "read",
+    possession: "any",
+  })
+  async findResponses(
+    @common.Req() request: Request,
+    @common.Param() params: CommandWhereUniqueInput
+  ): Promise<Response[]> {
+    const query = plainToClass(ResponseFindManyArgs, request.query);
+    const results = await this.service.findResponses(params.id, {
+      ...query,
+      select: {
+        command: {
+          select: {
+            id: true,
+          },
+        },
+
+        createdAt: true,
+        id: true,
+        responseText: true,
+        timestamp: true,
+        updatedAt: true,
+      },
+    });
+    if (results === null) {
+      throw new errors.NotFoundException(
+        `No resource was found for ${JSON.stringify(params)}`
+      );
+    }
+    return results;
+  }
+
+  @common.Post("/:id/responses")
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "update",
+    possession: "any",
+  })
+  async connectResponses(
+    @common.Param() params: CommandWhereUniqueInput,
+    @common.Body() body: ResponseWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      responses: {
+        connect: body,
+      },
+    };
+    await this.service.updateCommand({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Patch("/:id/responses")
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "update",
+    possession: "any",
+  })
+  async updateResponses(
+    @common.Param() params: CommandWhereUniqueInput,
+    @common.Body() body: ResponseWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      responses: {
+        set: body,
+      },
+    };
+    await this.service.updateCommand({
+      where: params,
+      data,
+      select: { id: true },
+    });
+  }
+
+  @common.Delete("/:id/responses")
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "update",
+    possession: "any",
+  })
+  async disconnectResponses(
+    @common.Param() params: CommandWhereUniqueInput,
+    @common.Body() body: ResponseWhereUniqueInput[]
+  ): Promise<void> {
+    const data = {
+      responses: {
+        disconnect: body,
+      },
+    };
+    await this.service.updateCommand({
+      where: params,
+      data,
+      select: { id: true },
+    });
   }
 }

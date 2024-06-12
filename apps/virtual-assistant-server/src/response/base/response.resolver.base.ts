@@ -13,16 +13,35 @@ import * as graphql from "@nestjs/graphql";
 import { GraphQLError } from "graphql";
 import { isRecordNotFoundError } from "../../prisma.util";
 import { MetaQueryPayload } from "../../util/MetaQueryPayload";
+import * as nestAccessControl from "nest-access-control";
+import * as gqlACGuard from "../../auth/gqlAC.guard";
+import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
+import * as common from "@nestjs/common";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
 import { Response } from "./Response";
 import { ResponseCountArgs } from "./ResponseCountArgs";
 import { ResponseFindManyArgs } from "./ResponseFindManyArgs";
 import { ResponseFindUniqueArgs } from "./ResponseFindUniqueArgs";
+import { CreateResponseArgs } from "./CreateResponseArgs";
+import { UpdateResponseArgs } from "./UpdateResponseArgs";
 import { DeleteResponseArgs } from "./DeleteResponseArgs";
+import { Command } from "../../command/base/Command";
 import { ResponseService } from "../response.service";
+@common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
 @graphql.Resolver(() => Response)
 export class ResponseResolverBase {
-  constructor(protected readonly service: ResponseService) {}
+  constructor(
+    protected readonly service: ResponseService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
 
+  @graphql.Query(() => MetaQueryPayload)
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "read",
+    possession: "any",
+  })
   async _responsesMeta(
     @graphql.Args() args: ResponseCountArgs
   ): Promise<MetaQueryPayload> {
@@ -32,14 +51,26 @@ export class ResponseResolverBase {
     };
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.Query(() => [Response])
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "read",
+    possession: "any",
+  })
   async responses(
     @graphql.Args() args: ResponseFindManyArgs
   ): Promise<Response[]> {
     return this.service.responses(args);
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @graphql.Query(() => Response, { nullable: true })
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "read",
+    possession: "own",
+  })
   async response(
     @graphql.Args() args: ResponseFindUniqueArgs
   ): Promise<Response | null> {
@@ -50,7 +81,69 @@ export class ResponseResolverBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @graphql.Mutation(() => Response)
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "create",
+    possession: "any",
+  })
+  async createResponse(
+    @graphql.Args() args: CreateResponseArgs
+  ): Promise<Response> {
+    return await this.service.createResponse({
+      ...args,
+      data: {
+        ...args.data,
+
+        command: args.data.command
+          ? {
+              connect: args.data.command,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @common.UseInterceptors(AclValidateRequestInterceptor)
+  @graphql.Mutation(() => Response)
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "update",
+    possession: "any",
+  })
+  async updateResponse(
+    @graphql.Args() args: UpdateResponseArgs
+  ): Promise<Response | null> {
+    try {
+      return await this.service.updateResponse({
+        ...args,
+        data: {
+          ...args.data,
+
+          command: args.data.command
+            ? {
+                connect: args.data.command,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Response)
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "delete",
+    possession: "any",
+  })
   async deleteResponse(
     @graphql.Args() args: DeleteResponseArgs
   ): Promise<Response | null> {
@@ -64,5 +157,26 @@ export class ResponseResolverBase {
       }
       throw error;
     }
+  }
+
+  @common.UseInterceptors(AclFilterResponseInterceptor)
+  @graphql.ResolveField(() => Command, {
+    nullable: true,
+    name: "command",
+  })
+  @nestAccessControl.UseRoles({
+    resource: "Command",
+    action: "read",
+    possession: "any",
+  })
+  async getCommand(
+    @graphql.Parent() parent: Response
+  ): Promise<Command | null> {
+    const result = await this.service.getCommand(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

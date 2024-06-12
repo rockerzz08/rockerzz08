@@ -11,11 +11,21 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsString } from "class-validator";
+import { Command } from "../../command/base/Command";
+import { ValidateNested, IsOptional, IsDate, IsString } from "class-validator";
 import { Type } from "class-transformer";
 
 @ObjectType()
 class Response {
+  @ApiProperty({
+    required: false,
+    type: () => Command,
+  })
+  @ValidateNested()
+  @Type(() => Command)
+  @IsOptional()
+  command?: Command | null;
+
   @ApiProperty({
     required: true,
   })
@@ -31,6 +41,28 @@ class Response {
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  responseText!: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  timestamp!: Date | null;
 
   @ApiProperty({
     required: true,

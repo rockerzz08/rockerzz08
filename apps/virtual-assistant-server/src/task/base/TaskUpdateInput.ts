@@ -9,5 +9,76 @@ https://docs.amplication.com/how-to/custom-code
 
 ------------------------------------------------------------------------------
   */
-class TaskUpdateInput {}
+import { InputType, Field } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import {
+  IsString,
+  IsOptional,
+  IsDate,
+  IsEnum,
+  ValidateNested,
+} from "class-validator";
+import { Type } from "class-transformer";
+import { EnumTaskStatus } from "./EnumTaskStatus";
+import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
+
+@InputType()
+class TaskUpdateInput {
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  description?: string | null;
+
+  @ApiProperty({
+    required: false,
+  })
+  @IsDate()
+  @Type(() => Date)
+  @IsOptional()
+  @Field(() => Date, {
+    nullable: true,
+  })
+  dueDate?: Date | null;
+
+  @ApiProperty({
+    required: false,
+    enum: EnumTaskStatus,
+  })
+  @IsEnum(EnumTaskStatus)
+  @IsOptional()
+  @Field(() => EnumTaskStatus, {
+    nullable: true,
+  })
+  status?: "Option1" | null;
+
+  @ApiProperty({
+    required: false,
+    type: String,
+  })
+  @IsString()
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  title?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => UserWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => UserWhereUniqueInput)
+  @IsOptional()
+  @Field(() => UserWhereUniqueInput, {
+    nullable: true,
+  })
+  user?: UserWhereUniqueInput | null;
+}
+
 export { TaskUpdateInput as TaskUpdateInput };

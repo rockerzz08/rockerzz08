@@ -16,56 +16,124 @@ import * as errors from "../../errors";
 import { Request } from "express";
 import { plainToClass } from "class-transformer";
 import { ApiNestedQuery } from "../../decorators/api-nested-query.decorator";
+import * as nestAccessControl from "nest-access-control";
+import * as defaultAuthGuard from "../../auth/defaultAuth.guard";
 import { ResponseService } from "../response.service";
+import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateRequest.interceptor";
+import { AclFilterResponseInterceptor } from "../../interceptors/aclFilterResponse.interceptor";
 import { ResponseCreateInput } from "./ResponseCreateInput";
 import { Response } from "./Response";
 import { ResponseFindManyArgs } from "./ResponseFindManyArgs";
 import { ResponseWhereUniqueInput } from "./ResponseWhereUniqueInput";
 import { ResponseUpdateInput } from "./ResponseUpdateInput";
 
+@swagger.ApiBearerAuth()
+@common.UseGuards(defaultAuthGuard.DefaultAuthGuard, nestAccessControl.ACGuard)
 export class ResponseControllerBase {
-  constructor(protected readonly service: ResponseService) {}
+  constructor(
+    protected readonly service: ResponseService,
+    protected readonly rolesBuilder: nestAccessControl.RolesBuilder
+  ) {}
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Post()
   @swagger.ApiCreatedResponse({ type: Response })
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "create",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async createResponse(
     @common.Body() data: ResponseCreateInput
   ): Promise<Response> {
     return await this.service.createResponse({
-      data: data,
+      data: {
+        ...data,
+
+        command: data.command
+          ? {
+              connect: data.command,
+            }
+          : undefined,
+      },
       select: {
+        command: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        responseText: true,
+        timestamp: true,
         updatedAt: true,
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get()
   @swagger.ApiOkResponse({ type: [Response] })
   @ApiNestedQuery(ResponseFindManyArgs)
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "read",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async responses(@common.Req() request: Request): Promise<Response[]> {
     const args = plainToClass(ResponseFindManyArgs, request.query);
     return this.service.responses({
       ...args,
       select: {
+        command: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        responseText: true,
+        timestamp: true,
         updatedAt: true,
       },
     });
   }
 
+  @common.UseInterceptors(AclFilterResponseInterceptor)
   @common.Get("/:id")
   @swagger.ApiOkResponse({ type: Response })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "read",
+    possession: "own",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async response(
     @common.Param() params: ResponseWhereUniqueInput
   ): Promise<Response | null> {
     const result = await this.service.response({
       where: params,
       select: {
+        command: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
         id: true,
+        responseText: true,
+        timestamp: true,
         updatedAt: true,
       },
     });
@@ -77,9 +145,18 @@ export class ResponseControllerBase {
     return result;
   }
 
+  @common.UseInterceptors(AclValidateRequestInterceptor)
   @common.Patch("/:id")
   @swagger.ApiOkResponse({ type: Response })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "update",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async updateResponse(
     @common.Param() params: ResponseWhereUniqueInput,
     @common.Body() data: ResponseUpdateInput
@@ -87,10 +164,26 @@ export class ResponseControllerBase {
     try {
       return await this.service.updateResponse({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          command: data.command
+            ? {
+                connect: data.command,
+              }
+            : undefined,
+        },
         select: {
+          command: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
           id: true,
+          responseText: true,
+          timestamp: true,
           updatedAt: true,
         },
       });
@@ -107,6 +200,14 @@ export class ResponseControllerBase {
   @common.Delete("/:id")
   @swagger.ApiOkResponse({ type: Response })
   @swagger.ApiNotFoundResponse({ type: errors.NotFoundException })
+  @nestAccessControl.UseRoles({
+    resource: "Response",
+    action: "delete",
+    possession: "any",
+  })
+  @swagger.ApiForbiddenResponse({
+    type: errors.ForbiddenException,
+  })
   async deleteResponse(
     @common.Param() params: ResponseWhereUniqueInput
   ): Promise<Response | null> {
@@ -114,8 +215,16 @@ export class ResponseControllerBase {
       return await this.service.deleteResponse({
         where: params,
         select: {
+          command: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
           id: true,
+          responseText: true,
+          timestamp: true,
           updatedAt: true,
         },
       });

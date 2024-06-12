@@ -18,25 +18,33 @@ import { CommandService } from "../command.service";
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
+  commandText: "exampleCommandText",
   createdAt: new Date(),
   id: "exampleId",
+  timestamp: new Date(),
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
+  commandText: "exampleCommandText",
   createdAt: new Date(),
   id: "exampleId",
+  timestamp: new Date(),
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
   {
+    commandText: "exampleCommandText",
     createdAt: new Date(),
     id: "exampleId",
+    timestamp: new Date(),
     updatedAt: new Date(),
   },
 ];
 const FIND_ONE_RESULT = {
+  commandText: "exampleCommandText",
   createdAt: new Date(),
   id: "exampleId",
+  timestamp: new Date(),
   updatedAt: new Date(),
 };
 
@@ -123,6 +131,7 @@ describe("Command", () => {
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        timestamp: CREATE_RESULT.timestamp.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -135,6 +144,7 @@ describe("Command", () => {
         {
           ...FIND_MANY_RESULT[0],
           createdAt: FIND_MANY_RESULT[0].createdAt.toISOString(),
+          timestamp: FIND_MANY_RESULT[0].timestamp.toISOString(),
           updatedAt: FIND_MANY_RESULT[0].updatedAt.toISOString(),
         },
       ]);
@@ -158,6 +168,7 @@ describe("Command", () => {
       .expect({
         ...FIND_ONE_RESULT,
         createdAt: FIND_ONE_RESULT.createdAt.toISOString(),
+        timestamp: FIND_ONE_RESULT.timestamp.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
   });
@@ -171,6 +182,7 @@ describe("Command", () => {
       .expect({
         ...CREATE_RESULT,
         createdAt: CREATE_RESULT.createdAt.toISOString(),
+        timestamp: CREATE_RESULT.timestamp.toISOString(),
         updatedAt: CREATE_RESULT.updatedAt.toISOString(),
       })
       .then(function () {
