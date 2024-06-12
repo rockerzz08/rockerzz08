@@ -3,6 +3,7 @@ import { CommandModule } from "./command/command.module";
 import { TaskModule } from "./task/task.module";
 import { ResponseModule } from "./response/response.module";
 import { UserModule } from "./user/user.module";
+import { VoiceRecognitionModule } from "./VoiceRecognition/voicerecognition.module";
 import { HealthModule } from "./health/health.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
@@ -24,6 +25,7 @@ import { AuthModule } from "./auth/auth.module";
     TaskModule,
     ResponseModule,
     UserModule,
+    VoiceRecognitionModule,
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
