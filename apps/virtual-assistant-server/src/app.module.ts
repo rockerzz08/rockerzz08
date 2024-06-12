@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { TaskModule } from "./task/task.module";
 import { CommandModule } from "./command/command.module";
+import { TaskModule } from "./task/task.module";
 import { ResponseModule } from "./response/response.module";
 import { UserModule } from "./user/user.module";
 import { HealthModule } from "./health/health.module";
@@ -20,8 +20,8 @@ import { AuthModule } from "./auth/auth.module";
   imports: [
     ACLModule,
     AuthModule,
-    TaskModule,
     CommandModule,
+    TaskModule,
     ResponseModule,
     UserModule,
     HealthModule,

@@ -62,9 +62,11 @@ export class CommandControllerBase {
           : undefined,
       },
       select: {
+        arguments: true,
         commandText: true,
         createdAt: true,
         id: true,
+        isCompleted: true,
         timestamp: true,
         updatedAt: true,
 
@@ -94,9 +96,11 @@ export class CommandControllerBase {
     return this.service.commands({
       ...args,
       select: {
+        arguments: true,
         commandText: true,
         createdAt: true,
         id: true,
+        isCompleted: true,
         timestamp: true,
         updatedAt: true,
 
@@ -127,9 +131,11 @@ export class CommandControllerBase {
     const result = await this.service.command({
       where: params,
       select: {
+        arguments: true,
         commandText: true,
         createdAt: true,
         id: true,
+        isCompleted: true,
         timestamp: true,
         updatedAt: true,
 
@@ -177,9 +183,11 @@ export class CommandControllerBase {
             : undefined,
         },
         select: {
+          arguments: true,
           commandText: true,
           createdAt: true,
           id: true,
+          isCompleted: true,
           timestamp: true,
           updatedAt: true,
 
@@ -218,9 +226,11 @@ export class CommandControllerBase {
       return await this.service.deleteCommand({
         where: params,
         select: {
+          arguments: true,
           commandText: true,
           createdAt: true,
           id: true,
+          isCompleted: true,
           timestamp: true,
           updatedAt: true,
 

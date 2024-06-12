@@ -1,61 +1,61 @@
 [
   {
     "role": "user",
-    "resource": "Task",
+    "resource": "Command",
     "action": "read:own",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Task",
+    "resource": "Command",
     "action": "create:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Task",
+    "resource": "Command",
     "action": "update:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Task",
+    "resource": "Command",
     "action": "delete:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Task",
+    "resource": "Command",
     "action": "read:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Command",
+    "resource": "Task",
     "action": "read:own",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Command",
+    "resource": "Task",
     "action": "create:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Command",
+    "resource": "Task",
     "action": "update:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Command",
+    "resource": "Task",
     "action": "delete:any",
     "attributes": "*"
   },
   {
     "role": "user",
-    "resource": "Command",
+    "resource": "Task",
     "action": "read:any",
     "attributes": "*"
   },

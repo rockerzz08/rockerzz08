@@ -21,6 +21,7 @@ const CREATE_INPUT = {
   commandText: "exampleCommandText",
   createdAt: new Date(),
   id: "exampleId",
+  isCompleted: "true",
   timestamp: new Date(),
   updatedAt: new Date(),
 };
@@ -28,6 +29,7 @@ const CREATE_RESULT = {
   commandText: "exampleCommandText",
   createdAt: new Date(),
   id: "exampleId",
+  isCompleted: "true",
   timestamp: new Date(),
   updatedAt: new Date(),
 };
@@ -36,6 +38,7 @@ const FIND_MANY_RESULT = [
     commandText: "exampleCommandText",
     createdAt: new Date(),
     id: "exampleId",
+    isCompleted: "true",
     timestamp: new Date(),
     updatedAt: new Date(),
   },
@@ -44,6 +47,7 @@ const FIND_ONE_RESULT = {
   commandText: "exampleCommandText",
   createdAt: new Date(),
   id: "exampleId",
+  isCompleted: "true",
   timestamp: new Date(),
   updatedAt: new Date(),
 };

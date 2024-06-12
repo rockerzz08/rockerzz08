@@ -5,6 +5,7 @@ import {
   SimpleForm,
   CreateProps,
   TextInput,
+  BooleanInput,
   ReferenceArrayInput,
   SelectArrayInput,
   DateTimeInput,
@@ -19,7 +20,9 @@ export const CommandCreate = (props: CreateProps): React.ReactElement => {
   return (
     <Create {...props}>
       <SimpleForm>
+        <div />
         <TextInput label="commandText" source="commandText" />
+        <BooleanInput label="isCompleted" source="isCompleted" />
         <ReferenceArrayInput
           source="responses"
           reference="Response"

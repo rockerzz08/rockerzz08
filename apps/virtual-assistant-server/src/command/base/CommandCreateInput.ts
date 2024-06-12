@@ -11,13 +11,32 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional, ValidateNested, IsDate } from "class-validator";
+import { IsJSONValue } from "../../validators";
+import {
+  IsOptional,
+  IsString,
+  IsBoolean,
+  ValidateNested,
+  IsDate,
+} from "class-validator";
+import { GraphQLJSON } from "graphql-type-json";
+import { InputJsonValue } from "../../types";
 import { ResponseCreateNestedManyWithoutCommandsInput } from "./ResponseCreateNestedManyWithoutCommandsInput";
 import { Type } from "class-transformer";
 import { UserWhereUniqueInput } from "../../user/base/UserWhereUniqueInput";
 
 @InputType()
 class CommandCreateInput {
+  @ApiProperty({
+    required: false,
+  })
+  @IsJSONValue()
+  @IsOptional()
+  @Field(() => GraphQLJSON, {
+    nullable: true,
+  })
+  arguments?: InputJsonValue;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -28,6 +47,17 @@ class CommandCreateInput {
     nullable: true,
   })
   commandText?: string | null;
+
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isCompleted?: boolean | null;
 
   @ApiProperty({
     required: false,

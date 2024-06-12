@@ -11,13 +11,32 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { ObjectType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional, IsDate, ValidateNested } from "class-validator";
+import { IsJSONValue } from "../../validators";
+import {
+  IsOptional,
+  IsString,
+  IsDate,
+  IsBoolean,
+  ValidateNested,
+} from "class-validator";
+import { GraphQLJSON } from "graphql-type-json";
+import { JsonValue } from "type-fest";
 import { Type } from "class-transformer";
 import { Response } from "../../response/base/Response";
 import { User } from "../../user/base/User";
 
 @ObjectType()
 class Command {
+  @ApiProperty({
+    required: false,
+  })
+  @IsJSONValue()
+  @IsOptional()
+  @Field(() => GraphQLJSON, {
+    nullable: true,
+  })
+  arguments!: JsonValue;
+
   @ApiProperty({
     required: false,
     type: String,
@@ -44,6 +63,17 @@ class Command {
   @IsString()
   @Field(() => String)
   id!: string;
+
+  @ApiProperty({
+    required: false,
+    type: Boolean,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isCompleted!: boolean | null;
 
   @ApiProperty({
     required: false,

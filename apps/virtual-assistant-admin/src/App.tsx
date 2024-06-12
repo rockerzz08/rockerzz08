@@ -5,14 +5,14 @@ import { theme } from "./theme/theme";
 import Login from "./Login";
 import "./App.scss";
 import Dashboard from "./pages/Dashboard";
-import { TaskList } from "./task/TaskList";
-import { TaskCreate } from "./task/TaskCreate";
-import { TaskEdit } from "./task/TaskEdit";
-import { TaskShow } from "./task/TaskShow";
 import { CommandList } from "./command/CommandList";
 import { CommandCreate } from "./command/CommandCreate";
 import { CommandEdit } from "./command/CommandEdit";
 import { CommandShow } from "./command/CommandShow";
+import { TaskList } from "./task/TaskList";
+import { TaskCreate } from "./task/TaskCreate";
+import { TaskEdit } from "./task/TaskEdit";
+import { TaskShow } from "./task/TaskShow";
 import { ResponseList } from "./response/ResponseList";
 import { ResponseCreate } from "./response/ResponseCreate";
 import { ResponseEdit } from "./response/ResponseEdit";
@@ -48,18 +48,18 @@ const App = (): React.ReactElement => {
         loginPage={Login}
       >
         <Resource
-          name="Task"
-          list={TaskList}
-          edit={TaskEdit}
-          create={TaskCreate}
-          show={TaskShow}
-        />
-        <Resource
           name="Command"
           list={CommandList}
           edit={CommandEdit}
           create={CommandCreate}
           show={CommandShow}
+        />
+        <Resource
+          name="Task"
+          list={TaskList}
+          edit={TaskEdit}
+          create={TaskCreate}
+          show={TaskShow}
         />
         <Resource
           name="Response"

@@ -28,6 +28,17 @@ class CommandOrderByInput {
   @Field(() => SortOrder, {
     nullable: true,
   })
+  arguments?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
   commandText?: SortOrder;
 
   @ApiProperty({
@@ -51,6 +62,17 @@ class CommandOrderByInput {
     nullable: true,
   })
   id?: SortOrder;
+
+  @ApiProperty({
+    required: false,
+    enum: ["asc", "desc"],
+  })
+  @IsOptional()
+  @IsEnum(SortOrder)
+  @Field(() => SortOrder, {
+    nullable: true,
+  })
+  isCompleted?: SortOrder;
 
   @ApiProperty({
     required: false,

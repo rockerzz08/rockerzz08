@@ -8,6 +8,7 @@ import {
   TextField,
   ReferenceManyField,
   Datagrid,
+  BooleanField,
   ReferenceField,
 } from "react-admin";
 
@@ -31,9 +32,11 @@ export const UserShow = (props: ShowProps): React.ReactElement => {
           label="Commands"
         >
           <Datagrid rowClick="show">
+            <TextField label="arguments" source="arguments" />
             <TextField label="commandText" source="commandText" />
             <DateField source="createdAt" label="Created At" />
             <TextField label="ID" source="id" />
+            <BooleanField label="isCompleted" source="isCompleted" />
             <TextField label="timestamp" source="timestamp" />
             <DateField source="updatedAt" label="Updated At" />
             <ReferenceField label="user" source="user.id" reference="User">

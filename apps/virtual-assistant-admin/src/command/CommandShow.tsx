@@ -6,6 +6,7 @@ import {
   ShowProps,
   TextField,
   DateField,
+  BooleanField,
   ReferenceField,
   ReferenceManyField,
   Datagrid,
@@ -18,9 +19,11 @@ export const CommandShow = (props: ShowProps): React.ReactElement => {
   return (
     <Show {...props}>
       <SimpleShowLayout>
+        <TextField label="arguments" source="arguments" />
         <TextField label="commandText" source="commandText" />
         <DateField source="createdAt" label="Created At" />
         <TextField label="ID" source="id" />
+        <BooleanField label="isCompleted" source="isCompleted" />
         <TextField label="timestamp" source="timestamp" />
         <DateField source="updatedAt" label="Updated At" />
         <ReferenceField label="user" source="user.id" reference="User">

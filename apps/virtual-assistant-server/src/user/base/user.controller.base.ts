@@ -227,9 +227,11 @@ export class UserControllerBase {
     const results = await this.service.findCommands(params.id, {
       ...query,
       select: {
+        arguments: true,
         commandText: true,
         createdAt: true,
         id: true,
+        isCompleted: true,
         timestamp: true,
         updatedAt: true,
 
